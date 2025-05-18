@@ -1,0 +1,4 @@
+# .dockerignore for Auth App
+node_modules
+dist
+bun.lock

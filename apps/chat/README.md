@@ -1,4 +1,4 @@
-# document-chat
+# chat
 
 A modern Bun + React + Tailwind CSS v4 app for streaming AI chat with document preview, using an OpenAI-compatible backend.
 

@@ -1,0 +1,4 @@
+# .dockerignore for Platform App
+node_modules
+dist
+bun.lock
