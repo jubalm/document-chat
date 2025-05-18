@@ -3,5 +3,10 @@
   "private": true,
   "workspaces": [
     "apps/*"
-  ]
+  ],
+  "scripts": {
+    "dev:chat": "bun --cwd=apps/chat run dev",
+    "dev:platform": "bun --cwd=apps/platform run dev",
+    "dev:auth": "bun --cwd=apps/auth run dev"
+  }
 }

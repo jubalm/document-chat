@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 
-export function PlatformApp() {
+export function App() {
   const [hello, setHello] = useState<string | null>(null)
   useEffect(() => {
     fetch("/api/hello")
