@@ -13,7 +13,7 @@ export function App() {
   const [content, setContent] = useState("")
   return (
     <DocumentContentContext.Provider value={{ content, setContent }}>
-      <div className="dark min-h-screen h-full w-full grid grid-cols-[1fr_2fr] p-4 text-foreground bg-background gap-4">
+      <div className="dark min-h-screen h-full w-full grid grid-cols-[1fr_2fr] text-foreground bg-background gap-x-6 px-4">
         <ChatInterface />
         <DocumentPreview />
       </div>

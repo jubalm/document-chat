@@ -37,3 +37,16 @@
     }
   }
 }
+
+.ql-container {
+  border: 0 none !important;
+  display: grid;
+
+  & .ql-editor {
+    padding: 4rem;
+    overflow: auto;
+    background: var(--color-muted-background);
+    color: var(--color-foreground);
+    border-radius: 1rem;
+  }
+}

@@ -69,7 +69,7 @@ export function ChatInterface() {
   }
 
   return (
-    <div className="h-full w-full grid grid-rows-[min-content_1fr_min-content] gap-y-2">
+    <div className="h-full w-full py-4 grid grid-rows-[min-content_1fr_min-content] gap-y-2">
       <h2 className="text-2xl font-bold px-2 text-foreground">Chat</h2>
       <div className="grid contain-size">
         <div

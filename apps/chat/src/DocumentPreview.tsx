@@ -94,10 +94,8 @@ export function DocumentPreview() {
         </div>
       </div>
       <div className='contain-size'>
-        <div className='w-full h-full overflow-auto'>
-          <div className="min-h-full bg-muted-background text-foreground rounded-lg shadow-sm p-12">
-            <div ref={editorRef} className="min-h-full border-0!" />
-          </div>
+        <div className="grid h-full overflow-auto pb-4">
+          <div ref={editorRef} />
         </div>
       </div>
     </div>
