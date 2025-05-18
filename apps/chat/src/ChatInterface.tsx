@@ -1,7 +1,8 @@
 import { useChat } from '@ai-sdk/react'
-import { useEffect, useRef, useMemo, useState } from 'react'
+import { useEffect, useRef, useMemo, useCallback, useState } from 'react'
 import Button from "./Button"
 import { markdownToHtml } from './utils'
+import { ChatInput } from './ChatInput'
 
 function UserMessage({ content }: { content: string }) {
   return (
@@ -31,9 +32,7 @@ function AssistantMessage({ content }: { content: string }) {
 }
 
 export function ChatInterface() {
-  const { messages, input, handleInputChange, handleSubmit, status, stop } = useChat({
-    api: '/api/chat',
-  })
+  const { messages, input, handleInputChange, handleSubmit, status, stop } = useChat({ api: '/api/chat' })
   const containerRef = useRef<HTMLDivElement>(null)
   const prevMessagesLength = useRef(messages.length)
 
@@ -51,7 +50,6 @@ export function ChatInterface() {
   const handleCustomSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (isBusy) {
-      console.log('attempt to abort')
       stop()
       return
     }
@@ -82,24 +80,14 @@ export function ChatInterface() {
           })}
         </div>
       </div>
-      <form className="flex gap-2" onSubmit={handleCustomSubmit}>
-        <textarea
-          className="flex-1 rounded px-4 py-2 border bg-muted-background/50 border-muted-background focus:border-foreground/30 outline-none resize-none min-h-[40px] max-h-40"
-          placeholder="Type your message..."
+      <form className="flex gap-2 items-end bg-muted-background/70 rounded px-2 py-2" onSubmit={handleCustomSubmit}>
+        <ChatInput
           value={input}
           onChange={handleInputChange}
-          onKeyDown={e => {
-            // Return key submits form, Shift+Enter adds a new line
-            if (e.key === 'Enter' && !e.shiftKey && !e.metaKey) {
-              e.preventDefault()
-              if (!isBusy && input.trim() !== '') {
-                handleCustomSubmit(e as any)
-              }
-            }
-          }}
-          disabled={isBusy}
+          isBusy={isBusy}
+          maxLines={6}
         />
-        <Button type="submit" isBusy={isBusy}>
+        <Button type="submit" isBusy={isBusy} className="bg-transparent shadow-none border-none p-0 h-8 w-8 flex items-center justify-center">
           {isBusy ? 'Stop' : (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3.714 3.048a.498.498 0 0 0-.683.627l2.843 7.627a2 2 0 0 1 0 1.396l-2.842 7.627a.498.498 0 0 0 .682.627l18-8.5a.5.5 0 0 0 0-.904z" /><path d="M6 12h16" /></svg>
           )}
