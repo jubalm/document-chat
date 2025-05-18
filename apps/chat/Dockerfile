@@ -20,4 +20,4 @@ FROM oven/bun:latest
 WORKDIR /app
 COPY --from=builder /app/apps/chat .
 COPY --from=builder /app/node_modules ./node_modules
-CMD ["bun", "run", "src/index.ts"]
+CMD ["bun", "src/index.ts"]

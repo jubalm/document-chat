@@ -2,11 +2,6 @@
   "name": "document-monorepo",
   "private": true,
   "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "devDependencies": {
-    "turbo": "^2.5.3"
-  },
-  "packageManager": "pnpm@8.15.4"
+    "apps/*"
+  ]
 }

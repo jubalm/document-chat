@@ -1,4 +1,3 @@
-// tsconfig.json for Bun Auth App
 {
   "extends": "../../packages/tsconfig/tsconfig.base.json"
 }

@@ -2,16 +2,24 @@
   "name": "platform",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
+  "main": "src/index.ts",
   "scripts": {
-    "dev": "bun run src/index.ts",
-    "build": "bun build src/index.ts --outdir dist"
+    "dev": "bun --hot src/index.ts",
+    "start": "NODE_ENV=production bun src/index.ts",
+    "build": "bun run build.ts"
   },
   "dependencies": {
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "tailwind-merge": "3.3.0",
+    "tailwindcss": "4.0.6"
   },
   "devDependencies": {
-    "@types/react": "^19.1.4",
-    "@types/react-dom": "^19.1.5"
+    "@tailwindcss/typography": "0.5.16",
+    "@types/bun": "1.2.13",
+    "@types/react": "19.0.0",
+    "@types/react-dom": "19.0.0",
+    "bun-plugin-tailwind": "0.0.14"
   }
 }
