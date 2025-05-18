@@ -1,8 +1,10 @@
-import { useChat } from '@ai-sdk/react'
-import { useEffect, useRef, useMemo, useCallback, useState } from 'react'
+import { Message, useChat } from '@ai-sdk/react'
+import { useEffect, useRef, useMemo, useCallback, useState, useContext } from 'react'
 import Button from "./Button"
 import { markdownToHtml } from './utils'
 import { ChatInput } from './ChatInput'
+import { DocumentContentContext } from './App'
+import { UIMessage } from 'ai'
 
 function UserMessage({ content }: { content: string }) {
   return (
@@ -32,7 +34,8 @@ function AssistantMessage({ content }: { content: string }) {
 }
 
 export function ChatInterface() {
-  const { messages, input, handleInputChange, handleSubmit, status, stop } = useChat({ api: '/api/chat' })
+  const { content: documentContent } = useContext(DocumentContentContext)
+  const { messages, setMessages, input, handleInputChange, handleSubmit, status, stop } = useChat({ api: '/api/chat' })
   const containerRef = useRef<HTMLDivElement>(null)
   const prevMessagesLength = useRef(messages.length)
 
@@ -46,13 +49,22 @@ export function ChatInterface() {
     prevMessagesLength.current = messages.length
   }, [messages])
 
-  // Custom submit handler to support abort
+  // Custom submit handler to support abort and inject document context
   const handleCustomSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (isBusy) {
       stop()
       return
     }
+
+    // Inject system message with document content
+    const foo: Message = {
+      id: 'document-context',
+      role: 'system',
+      content: `The following is the current document content for context:\n\n${documentContent}`,
+    }
+    setMessages([foo, ...messages.filter((msg) => msg.id !== 'document-context')])
+
     handleSubmit(e)
   }
 
@@ -69,6 +81,7 @@ export function ChatInterface() {
               case 'user':
                 return <UserMessage key={msg.id} content={msg.content} />
               case 'assistant':
+                console.log('parts', msg.parts)
                 return <AssistantMessage key={msg.id} content={msg.content} />
               case 'system':
                 return <div key={msg.id} className="text-muted-foreground text-sm">{msg.content}</div>

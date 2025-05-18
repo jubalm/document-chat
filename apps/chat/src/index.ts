@@ -54,7 +54,9 @@ serve({
             // enable abort signal to cancel the request
             abortSignal: req.signal,
           })
-          return result.toDataStreamResponse()
+          return result.toDataStreamResponse({
+            sendReasoning: true
+          })
         } catch (err) {
           if ((err instanceof Error) && err.name === 'AbortError') {
             return new Response('Stream aborted by client', { status: 499 })

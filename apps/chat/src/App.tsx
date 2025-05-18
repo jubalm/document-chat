@@ -1,14 +1,23 @@
+import { createContext, useState } from "react"
 import { DocumentPreview } from "./DocumentPreview"
 import { ChatInterface } from "./ChatInterface"
 import "./index.css"
 
+// Context for document content
+export const DocumentContentContext = createContext<{
+  content: string
+  setContent: (c: string) => void
+}>({ content: "", setContent: () => {} })
+
 export function App() {
+  const [content, setContent] = useState("")
   return (
-    <div className="dark min-h-screen h-full w-full grid grid-cols-[1fr_2fr] p-4
-     text-foreground bg-background gap-4">
-      <ChatInterface />
-      <DocumentPreview />
-    </div>
+    <DocumentContentContext.Provider value={{ content, setContent }}>
+      <div className="dark min-h-screen h-full w-full grid grid-cols-[1fr_2fr] p-4 text-foreground bg-background gap-4">
+        <ChatInterface />
+        <DocumentPreview />
+      </div>
+    </DocumentContentContext.Provider>
   )
 }
 

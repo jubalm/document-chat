@@ -1,10 +1,12 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useContext } from "react"
 import Quill from "quill"
 import "quill/dist/quill.snow.css"
+import { DocumentContentContext } from "./App"
 
 export function DocumentPreview() {
   const editorRef = useRef<HTMLDivElement>(null)
   const toolbarRef = useRef<HTMLDivElement>(null)
+  const { setContent } = useContext(DocumentContentContext)
 
   useEffect(() => {
     if (!editorRef.current || !toolbarRef.current) return
@@ -22,11 +24,20 @@ export function DocumentPreview() {
       },
     })
 
+    // Update context on text change
+    quill.on("text-change", () => {
+      setContent(quill.getText())
+    })
+    // Set initial content
+    setContent(quill.getText())
+
     // cleanup clipboard pasted html content
     quill.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
       delta.ops.forEach((op) => {
+        console.log("op", op)
         if (op.attributes) {
           delete op.attributes.background
+          delete op.attributes.color
           delete op.attributes.style
           delete op.attributes.className
         }
@@ -39,7 +50,7 @@ export function DocumentPreview() {
       if (!editorRef.current) return
       editorRef.current.innerHTML = ""
     }
-  }, [editorRef, toolbarRef])
+  }, [editorRef, toolbarRef, setContent])
 
   return (
     <div className="h-full w-full grid gap-y-3 grid-rows-[min-content_1fr]">
