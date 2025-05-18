@@ -51,9 +51,14 @@ serve({
           const result = streamText({
             model: customOpenAI('meta-llama/Meta-Llama-3.1-8B-Instruct'),
             messages: parsedMessage.data,
+            // enable abort signal to cancel the request
+            abortSignal: req.signal,
           })
           return result.toDataStreamResponse()
         } catch (err) {
+          if ((err instanceof Error) && err.name === 'AbortError') {
+            return new Response('Stream aborted by client', { status: 499 })
+          }
           console.error("/api/chat error:", err)
           return Response.json({ error: err instanceof Error ? (err.stack || err.message) : String(err) }, { status: 500 })
         }

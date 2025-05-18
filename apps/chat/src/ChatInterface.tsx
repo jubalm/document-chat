@@ -31,33 +31,42 @@ function AssistantMessage({ content }: { content: string }) {
 }
 
 export function ChatInterface() {
-  const { messages, input, handleInputChange, handleSubmit, status } = useChat({
+  const { messages, input, handleInputChange, handleSubmit, status, stop } = useChat({
     api: '/api/chat',
   })
   const containerRef = useRef<HTMLDivElement>(null)
+  const prevMessagesLength = useRef(messages.length)
+
+  const isBusy = useMemo(() => status === 'submitted' || status === 'streaming', [status])
 
   useEffect(() => {
-    const el = containerRef.current
-    if (!el) return
-
-    // Check if user is already at (or very near) the bottom
-    const threshold = 40 // px, adjust as needed
-    const isAtBottom = el.scrollHeight - el.scrollTop - el.clientHeight < threshold
-
-    if (isAtBottom) {
-      el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' })
+    // If a new message was added, scroll to bottom
+    if (containerRef.current && messages.length > prevMessagesLength.current) {
+      containerRef.current.scrollTo({ top: 0, behavior: 'smooth' })
     }
+    prevMessagesLength.current = messages.length
   }, [messages])
 
-  // Use useMemo for isBusy
-  const isBusy = useMemo(() => status === 'submitted' || status === 'streaming', [status])
+  // Custom submit handler to support abort
+  const handleCustomSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (isBusy) {
+      console.log('attempt to abort')
+      stop()
+      return
+    }
+    handleSubmit(e)
+  }
 
   return (
     <div className="h-full w-full grid grid-rows-[min-content_1fr_min-content] gap-y-2">
       <h2 className="text-2xl font-bold px-2 text-foreground">Chat</h2>
       <div className="grid contain-size">
-        <div ref={containerRef} className='overflow-auto h-full min-h-0 place-content-end'>
-          {messages.map((msg) => {
+        <div
+          ref={containerRef}
+          className='overflow-auto h-full min-h-0 flex flex-col-reverse place-content-end gap-y-1'
+        >
+          {messages.slice().reverse().map((msg) => {
             switch (msg.role) {
               case 'user':
                 return <UserMessage key={msg.id} content={msg.content} />
@@ -73,7 +82,7 @@ export function ChatInterface() {
           })}
         </div>
       </div>
-      <form className="flex gap-2" onSubmit={handleSubmit}>
+      <form className="flex gap-2" onSubmit={handleCustomSubmit}>
         <input
           type="text"
           className="flex-1 rounded px-4 py-2 border bg-muted-background/50 border-muted-background focus:border-foreground/30 outline-none"
@@ -83,7 +92,9 @@ export function ChatInterface() {
           disabled={isBusy}
         />
         <Button type="submit" isBusy={isBusy}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3.714 3.048a.498.498 0 0 0-.683.627l2.843 7.627a2 2 0 0 1 0 1.396l-2.842 7.627a.498.498 0 0 0 .682.627l18-8.5a.5.5 0 0 0 0-.904z" /><path d="M6 12h16" /></svg>
+          {isBusy ? 'Stop' : (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3.714 3.048a.498.498 0 0 0-.683.627l2.843 7.627a2 2 0 0 1 0 1.396l-2.842 7.627a.498.498 0 0 0 .682.627l18-8.5a.5.5 0 0 0 0-.904z" /><path d="M6 12h16" /></svg>
+          )}
         </Button>
       </form>
     </div>
