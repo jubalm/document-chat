@@ -83,12 +83,20 @@ export function ChatInterface() {
         </div>
       </div>
       <form className="flex gap-2" onSubmit={handleCustomSubmit}>
-        <input
-          type="text"
-          className="flex-1 rounded px-4 py-2 border bg-muted-background/50 border-muted-background focus:border-foreground/30 outline-none"
+        <textarea
+          className="flex-1 rounded px-4 py-2 border bg-muted-background/50 border-muted-background focus:border-foreground/30 outline-none resize-none min-h-[40px] max-h-40"
           placeholder="Type your message..."
           value={input}
           onChange={handleInputChange}
+          onKeyDown={e => {
+            // Return key submits form, Shift+Enter adds a new line
+            if (e.key === 'Enter' && !e.shiftKey && !e.metaKey) {
+              e.preventDefault()
+              if (!isBusy && input.trim() !== '') {
+                handleCustomSubmit(e as any)
+              }
+            }
+          }}
           disabled={isBusy}
         />
         <Button type="submit" isBusy={isBusy}>
