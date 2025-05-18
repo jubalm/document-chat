@@ -22,6 +22,18 @@ export function DocumentPreview() {
       },
     })
 
+    // cleanup clipboard pasted html content
+    quill.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
+      delta.ops.forEach((op) => {
+        if (op.attributes) {
+          delete op.attributes.background
+          delete op.attributes.style
+          delete op.attributes.className
+        }
+      })
+      return delta
+    })
+
     return () => {
       // Remove Quill editor DOM nodes on unmount
       if (!editorRef.current) return
@@ -60,6 +72,10 @@ export function DocumentPreview() {
           <span className="ql-formats">
             <button className="ql-blockquote"></button>
             <button className="ql-code-block"></button>
+          </span>
+          <span className="ql-formats">
+            <button className="ql-color"></button>
+            <button className="ql-background"></button>
           </span>
           <span className="ql-formats">
             <button className="ql-clean"></button>

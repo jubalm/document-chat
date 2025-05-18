@@ -39,7 +39,14 @@ export function ChatInterface() {
   useEffect(() => {
     const el = containerRef.current
     if (!el) return
-    el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' })
+
+    // Check if user is already at (or very near) the bottom
+    const threshold = 40 // px, adjust as needed
+    const isAtBottom = el.scrollHeight - el.scrollTop - el.clientHeight < threshold
+
+    if (isAtBottom) {
+      el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' })
+    }
   }, [messages])
 
   // Use useMemo for isBusy
@@ -76,7 +83,7 @@ export function ChatInterface() {
           disabled={isBusy}
         />
         <Button type="submit" isBusy={isBusy}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.714 3.048a.498.498 0 0 0-.683.627l2.843 7.627a2 2 0 0 1 0 1.396l-2.842 7.627a.498.498 0 0 0 .682.627l18-8.5a.5.5 0 0 0 0-.904z" /><path d="M6 12h16" /></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3.714 3.048a.498.498 0 0 0-.683.627l2.843 7.627a2 2 0 0 1 0 1.396l-2.842 7.627a.498.498 0 0 0 .682.627l18-8.5a.5.5 0 0 0 0-.904z" /><path d="M6 12h16" /></svg>
         </Button>
       </form>
     </div>
