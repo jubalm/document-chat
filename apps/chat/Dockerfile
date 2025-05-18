@@ -1,32 +1,23 @@
 # syntax=docker/dockerfile:1
-FROM oven/bun:1.2.13 AS base
 
+# ---- Install dependencies (root context) ----
+FROM oven/bun:latest AS deps
 WORKDIR /app
-
-# Copy package and lock files first for better caching
-COPY package.json bun.lock bunfig.toml ./
-
-# Install dependencies
+COPY ../../package.json ../../pnpm-lock.yaml ../../pnpm-workspace.yaml ./
+COPY ../../packages ./packages
 RUN bun install
 
-# Copy the rest of the source code
-COPY . .
-
-# Build the app (outputs to dist/)
-RUN bun run build.ts
-
-# Use a minimal runtime image
-FROM oven/bun:1.2.13 AS runtime
+# ---- Build app ----
+FROM oven/bun:latest AS builder
 WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/packages ./packages
+COPY ./ ./apps/chat
+RUN bun run build
 
-# Copy built app and dependencies
-COPY --from=base /app /app
-
-# Expose Bun's default port
-EXPOSE 3000
-
-# Set environment variables (override as needed)
-ENV NODE_ENV=production
-
-# Start the Bun server
-CMD ["bun", "src/index.ts"]
+# ---- Run app ----
+FROM oven/bun:latest
+WORKDIR /app
+COPY --from=builder /app/apps/chat .
+COPY --from=builder /app/node_modules ./node_modules
+CMD ["bun", "run", "src/index.ts"]

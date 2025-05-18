@@ -1,5 +1,6 @@
 // tsconfig.json for Bun Auth App
 {
+  "extends": "../../packages/tsconfig/tsconfig.base.json",
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
@@ -10,5 +11,7 @@
     "forceConsistentCasingInFileNames": true,
     "outDir": "dist"
   },
-  "include": ["src/**/*"]
+  "include": [
+    "src/**/*"
+  ]
 }

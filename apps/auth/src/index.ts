@@ -1,3 +1,3 @@
 // src/index.ts
 
-console.log("Auth service running!");
+console.log("Auth service running!")
