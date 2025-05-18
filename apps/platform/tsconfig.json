@@ -1,19 +1,4 @@
 // tsconfig.json for Bun Platform App
 {
-  "extends": "../../packages/tsconfig/tsconfig.base.json",
-  "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "outDir": "dist",
-    "jsx": "react-jsx",
-    "jsxImportSource": "react"
-  },
-  "include": [
-    "src/**/*"
-  ]
+  "extends": "../../packages/tsconfig/tsconfig.base.json"
 }
