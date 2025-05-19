@@ -86,7 +86,6 @@ export function ChatInterface() {
               case 'user':
                 return <UserMessage key={msg.id} content={msg.content} />
               case 'assistant':
-                console.log('parts', msg.parts)
                 return <AssistantMessage key={msg.id} content={msg.content} />
               case 'system':
                 if (msg.id === 'document-context') {

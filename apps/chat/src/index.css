@@ -40,6 +40,11 @@
   }
 }
 
+.ql-toolbar {
+  &.ql-snow {
+    padding-inline: 1rem;
+  }
+}
 .ql-container {
   border: 0 none !important;
   display: grid;

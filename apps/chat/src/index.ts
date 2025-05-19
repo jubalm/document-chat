@@ -1,7 +1,7 @@
 import { serve } from "bun"
 import index from "./index.html"
 import { createOpenAI } from '@ai-sdk/openai'
-import { CoreMessage, Message, streamText } from 'ai'
+import { CoreMessage, streamText } from 'ai'
 import { MessageArraySchema } from './schema'
 
 // Custom provider for IONOS or other OpenAI-compatible endpoints
@@ -26,7 +26,9 @@ Below is the current content of the document for your reference:
 serve({
   routes: {
     // Serve index.html for all unmatched routes.
-    "/*": index,
+    '/*': index,
+
+    '/documents/:filename': index,
 
     '/api/document/company-policy': async req => {
       return new Response(Bun.file('public/company-policy.md'), {
@@ -44,10 +46,10 @@ serve({
           return Response.json({ error: "Invalid messages input: " + parsedMessage.error.message }, { status: 400 })
         }
 
-        const messages = [{
-          role: "system",
-          content: SYSTEM_PROMPT,
-        }, ...parsedMessage.data] satisfies CoreMessage[] | Omit<Message, "id">[]
+        const messages: CoreMessage[] = [
+          { role: "system", content: SYSTEM_PROMPT },
+          ...parsedMessage.data
+        ]
 
         try {
           const result = streamText({
@@ -56,9 +58,7 @@ serve({
             // enable abort signal to cancel the request
             abortSignal: req.signal,
           })
-          return result.toDataStreamResponse({
-            sendReasoning: true
-          })
+          return result.toDataStreamResponse({ sendReasoning: true })
         } catch (err) {
           if ((err instanceof Error) && err.name === 'AbortError') {
             return new Response('Stream aborted by client', { status: 499 })
@@ -68,16 +68,10 @@ serve({
         }
       },
     },
-
-    '/documents/:filename': index,
-
   },
 
   development: process.env.NODE_ENV !== "production" && {
-    // Enable browser hot reloading in development
     hmr: true,
-
-    // Echo console logs from the browser to the server
     console: true,
   },
 })
