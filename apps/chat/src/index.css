@@ -33,7 +33,9 @@
   .dark {
     .prose {
       --tw-prose-bold: var(--color-loud-foreground);
+      --tw-prose-code: var(--color-loud-foreground);
       --tw-prose-body: var(--color-foreground);
+      --tw-prose-pre-bg: oklch(from var(--color-background) calc(l - 0.02) c h);
     }
   }
 }
@@ -41,12 +43,18 @@
 .ql-container {
   border: 0 none !important;
   display: grid;
+  background: var(--color-muted-background);
+  border-radius: 1rem;
+  padding: 4rem;
 
   & .ql-editor {
-    padding: 4rem;
     overflow: auto;
-    background: var(--color-muted-background);
     color: var(--color-foreground);
-    border-radius: 1rem;
+    position: relative;
+    font-size: 1rem;
+
+    &.ql-blank::before {
+      color: color-mix(in srgb, var(--color-foreground) 20%, transparent);
+    }
   }
 }

@@ -4,7 +4,6 @@ import Button from "./Button"
 import { markdownToHtml } from './utils'
 import { ChatInput } from './ChatInput'
 import { DocumentContentContext } from './App'
-import { UIMessage } from 'ai'
 
 function UserMessage({ content }: { content: string }) {
   return (
@@ -35,7 +34,7 @@ function AssistantMessage({ content }: { content: string }) {
 
 export function ChatInterface() {
   const { content: documentContent } = useContext(DocumentContentContext)
-  const { messages, setMessages, input, handleInputChange, handleSubmit, status, stop } = useChat({ api: '/api/chat' })
+  const { messages, setMessages, input, handleInputChange, handleSubmit, status, stop } = useChat({ api: '/api/chat', })
   const containerRef = useRef<HTMLDivElement>(null)
   const prevMessagesLength = useRef(messages.length)
 
@@ -61,7 +60,13 @@ export function ChatInterface() {
     const foo: Message = {
       id: 'document-context',
       role: 'system',
-      content: `The following is the current document content for context:\n\n${documentContent}`,
+      content: `
+      ---
+
+      ${documentContent}
+
+      ---
+      `,
     }
     setMessages([foo, ...messages.filter((msg) => msg.id !== 'document-context')])
 
@@ -84,6 +89,14 @@ export function ChatInterface() {
                 console.log('parts', msg.parts)
                 return <AssistantMessage key={msg.id} content={msg.content} />
               case 'system':
+                if (msg.id === 'document-context') {
+                  return (
+                    <div key={msg.id} className="text-[oklch(from_var(--color-foreground)_calc(l_-_0.2)_c_h)] italic text-sm flex items-center gap-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h14a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /><path d="M2 15h10" /><path d="m9 18 3-3-3-3" /></svg>
+                      Added document context
+                    </div>
+                  )
+                }
                 return <div key={msg.id} className="text-muted-foreground text-sm">{msg.content}</div>
               case 'data':
                 return <div key={msg.id} className="text-muted-foreground text-sm">{msg.content}</div>
