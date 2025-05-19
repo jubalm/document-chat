@@ -10,8 +10,8 @@
     "typescript": "^5"
   },
   "scripts": {
-    "dev": "bun run src/index.ts",
-    "build": "bun build src/index.ts --outdir dist",
-    "start": "bun run dist/index.js"
+    "start": "bun run src/index.ts",
+    "dev": "bun run --hot src/index.ts & bun run inspect",
+    "inspect": "bunx @modelcontextprotocol/inspector"
   }
 }

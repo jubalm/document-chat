@@ -23,9 +23,11 @@ server.resource('hello', 'hello://main', async (uri) => ({
 server.tool(
   'add',
   { a: z.number(), b: z.number() },
-  async ({ a, b }) => ({
-    content: [{ type: 'text', text: String(a + b) }],
-  }),
+  async ({ a, b }) => {
+    return {
+      content: [{ type: 'text', text: String(a + b) }],
+    }
+  },
 )
 
 // Set up session-aware HTTP transport for MCP
