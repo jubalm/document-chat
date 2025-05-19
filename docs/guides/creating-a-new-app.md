@@ -1,51 +1,64 @@
-# LLM Automation: How To Add or Create New App In This Monorepo
+# LLM Automation: Creating a New App in This Monorepo
 
-## Instructions for the LLM
+## LLM-Driven Workflow (2025 Edition)
 
-You are tasked with creating a step-by-step TODO list for setting up a new app in this monorepo, based on the template and instructions below. Your TODO list should be actionable, clear, and follow the monorepo's conventions.
+### 1. Branch Management
 
-### Template for TODO List
+- Create a new git branch for the app creation task and switch to it.
+  - If branch switch fails, abort the workflow and notify the user.
 
-1. Create the app folder under `apps/` and navigate into it.
-2. Initialize the app with Bun (`bun init` or `bun init --react=tailwind` for frontend).
-3. Add a `tsconfig.json` that extends the shared base config.
-4. Add a `README.md` with required sections.
-5. Create the `src/` directory and add `src/index.ts` with a minimal entry point.
-6. Install dependencies from the monorepo root (`bun install`).
-7. Run the app from the monorepo root using the `APP` environment variable.
-8. Confirm all checklist items are complete (see below).
+### 2. Checklist File Generation
 
-### Checklist
+- Generate a step-by-step TODO checklist for the new app, tailored to the goal (e.g., `mcp-server`), in markdown format.
+- Save the checklist as a file in `docs/generated/` (e.g., `docs/generated/create-mcp-server-checklist.md`).
+- The checklist must use markdown checkboxes (`- [ ]`) for each actionable step.
+- The checklist file is the single source of truth for progress and must be updated after each step.
 
-- [ ] Folder created under `apps/`
-- [ ] Ran `bun init` inside the new folder
-- [ ] `tsconfig.json` extends the shared base config
-- [ ] `README.md` present and filled out
-- [ ] `src/index.ts` exists
-- [ ] Installed dependencies with `bun install`
-- [ ] App runs with `APP=your-new-app bun run dev`
+### 3. User Review & Certainty Check
 
-### LLM Response Requirements
+- After generating the checklist file, prompt the user to review and confirm.
+- If the LLM's certainty in the checklist is below 95%, ask the user for clarification before proceeding.
 
-- Output the TODO list in a clear, numbered format.
-- After generating the TODO list, confirm that you are ready to execute the steps autonomously.
-- If you are uncertain about any step or need clarification, include your question(s) immediately after the TODO list, before proceeding with execution. Wait for amendments or confirmation before starting.
-- Once confirmed, proceed to execute the TODO list autonomously, step by step.
+### 4. Autonomous Execution
+
+- Upon user confirmation, autonomously execute each checklist item in order.
+- After completing each step, mark it as complete (`- [x]`) in the checklist file before proceeding.
+- If a step fails, pause and notify the user for intervention.
+
+### 5. Resumability
+
+- The workflow must be resumable: if interrupted, the LLM should read the checklist file and continue from the last incomplete item.
+
+### 6. General Requirements
+
+- All output and progress must be reflected in the checklist file.
+- Minimize unnecessary human-readable explanations; optimize for LLM parsing and automation.
+- Only prompt the user when required by the workflow (e.g., confirmation, uncertainty, or error).
 
 ---
 
-## Example LLM Output
+## Example Checklist File (`docs/generated/create-mcp-server-checklist.md`)
 
-**TODO List:**
+```markdown
+- [ ] Create and switch to the newly created branch. (e.g., `create-mcp-server`)
+- [ ] Git commit the newly created checklist file in docs
+- [ ] Create folder `apps/mcp-server` and navigate into it
+- [ ] Ensure you are in `apps/mcp-server` for subsequent tasks
+- [ ] Run `bun init` in the new folder
+- [ ] Add `tsconfig.json` extending the shared base config
+- [ ] Add `README.md` with required sections
+- [ ] Create `src/index.ts` with a minimal MCP server entry point (with a hello tool/route)
+- [ ] (Optional) Add `Dockerfile` if needed
+- [ ] Run `bun install` from the monorepo root
+- [ ] Ensure there are `dev`, `build`, and `start` scripts to `package.json`
+- [ ] Run the app with `APP=mcp-server bun run dev`
+- [ ] Verify all checklist items are complete
+```
 
-1. Create folder `apps/example-app` and navigate into it
-2. Run `bun init`
-3. Add `tsconfig.json` extending the shared base config
-4. Add `README.md` with required sections
-5. Create `src/index.ts` with a hello world
-6. Run `bun install` from the monorepo root
-7. Run the app with `APP=example-app bun run dev`
-8. Verify all checklist items are complete
+---
 
-**Confirmation:**
-Ready to execute the above steps. If any clarification is needed, please specify before I begin.
+## Notes
+
+- This workflow supersedes all previous instructions for app creation automation.
+- Checklist file naming: use a descriptive, kebab-case name reflecting the goal.
+- The LLM is responsible for all file and git operations unless a step fails or user input is required.
