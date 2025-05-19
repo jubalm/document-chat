@@ -1,15 +1,30 @@
 # mcp
 
-To install dependencies:
+A Model Context Protocol (MCP) server for exposing resources, prompts, and tools to LLMs in a standardized way.
+
+## Setup
 
 ```bash
 bun install
 ```
 
-To run:
+## Usage
 
 ```bash
-bun run index.ts
+APP=mcp bun run dev
 ```
 
-This project was created using `bun init` in bun v1.2.13. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+## Features
+
+- MCP server using @modelcontextprotocol/sdk
+- Stdio transport for communication
+- Extensible with custom resources and tools
+
+## Development
+
+- Main entry: `src/index.ts`
+- See `docs/mcp-servers.md` for SDK usage and examples
+
+## License
+
+MIT
